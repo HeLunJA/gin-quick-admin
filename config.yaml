@@ -1,0 +1,10 @@
+server:
+  host: localhost
+  port: 8080
+mysql:
+  port: 3306
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: test
+  username: root
+  password: root599926
+  path: 127.0.0.1
