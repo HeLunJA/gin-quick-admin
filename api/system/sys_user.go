@@ -10,7 +10,7 @@ type UserApi struct{}
 
 func (u *UserApi) DeleteById(c *gin.Context) {
 	var userModel system.SysUser
-	userId := c.Param("uuid")
+	userId := c.Param("userId")
 	_, err := userService.DeleteUserById(&userModel, userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

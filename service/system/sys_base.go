@@ -2,7 +2,6 @@ package system
 
 import (
 	"errors"
-	"github.com/gofrs/uuid/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gvaTemplate/global"
 	"gvaTemplate/model/system"
@@ -15,9 +14,7 @@ func (s *SystemUserService) Register(userModel *system.SysUser) (userInter *syst
 	if res.Error == nil {
 		return userModel, errors.New("账号已存在")
 	}
-	userId := uuid.Must(uuid.NewV4())
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userModel.Password), bcrypt.DefaultCost)
-	userModel.UUID = userId
 	userModel.Password = string(hashedPassword)
 	result := global.GT_DB.Create(userModel)
 	if result.Error != nil {

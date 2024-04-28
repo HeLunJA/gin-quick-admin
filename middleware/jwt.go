@@ -8,7 +8,6 @@ import (
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		println(666666666666666)
 		// 从请求头中获取 Authorization 字段
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

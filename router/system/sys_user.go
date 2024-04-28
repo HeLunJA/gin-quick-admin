@@ -11,7 +11,7 @@ func (s *userRouter) InitUserRouter(Router *gin.RouterGroup) (R gin.IRouter) {
 	userRouter := Router.Group("user")
 	userApi := v.ApiGroupApp.SystemApiGroup.UserApi
 	{
-		userRouter.DELETE("/deleteUserById/:uuid", userApi.DeleteById)
+		userRouter.DELETE("/deleteUserById/:userId", userApi.DeleteById)
 	}
 	return userRouter
 }
