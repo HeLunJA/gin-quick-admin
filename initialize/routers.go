@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"github.com/gin-gonic/gin"
+	"gvaTemplate/middleware"
 	"gvaTemplate/router"
 	"net/http"
 )
@@ -9,7 +10,12 @@ import (
 func Routers() *gin.Engine {
 	Router := gin.New()
 	systemRouter := router.RouterGroupApp.System
+	baseRouterGroup := Router.Group("")
+	{
+		systemRouter.InitBaseRouter(baseRouterGroup) // 不需要鉴权的路由
+	}
 	RouterGroup := Router.Group("")
+	RouterGroup.Use(middleware.JWTAuth())
 	{
 		systemRouter.InitUserRouter(RouterGroup)
 	}
