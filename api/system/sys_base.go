@@ -20,8 +20,9 @@ func (u *BaseApi) Register(c *gin.Context) {
 	res, err := userService.Register(&userModel)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "用户注册成功", "data": gin.H{"userId": res.UUID, "userName": res.Username}})
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "注册成功", "data": gin.H{"userId": res.UUID, "userName": res.Username}})
 }
 
 func (u *BaseApi) Login(c *gin.Context) {

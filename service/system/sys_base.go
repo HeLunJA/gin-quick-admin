@@ -11,6 +11,10 @@ import (
 type SystemBaseService struct{}
 
 func (s *SystemUserService) Register(userModel *system.SysUser) (userInter *system.SysUser, err error) {
+	res := global.GT_DB.Where("username = ?", userModel.Username).First(&userInter)
+	if res.Error == nil {
+		return userModel, errors.New("账号已存在")
+	}
 	userId := uuid.Must(uuid.NewV4())
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userModel.Password), bcrypt.DefaultCost)
 	userModel.UUID = userId
