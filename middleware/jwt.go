@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"gvaTemplate/model/system/request"
 	"gvaTemplate/utils"
 	"net/http"
 )
@@ -25,12 +26,17 @@ func JWTAuth() gin.HandlerFunc {
 		tokenString := authHeader[7:]
 		j := utils.NewJWT()
 		claims, err := j.ParseToken(tokenString)
+		newClaims := request.BaseClaims{
+			UserId:   claims.UserId,
+			UserName: claims.UserName,
+			NickName: claims.NickName,
+		}
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to get claims"})
 			c.Abort()
 			return
 		}
-		c.Set("claims", claims)
+		c.Set("claims", newClaims)
 		c.Next()
 	}
 }
