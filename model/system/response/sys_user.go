@@ -10,3 +10,8 @@ type LoginResponse struct {
 	User  UserResponse `json:"user"`
 	Token string       `json:"token"`
 }
+
+type CaptchaResponse struct {
+	CaptchaImg string `json:"captchaImg"`
+	CaptchaId  string `json:"captchaId"`
+}

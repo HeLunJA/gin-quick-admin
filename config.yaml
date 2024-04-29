@@ -14,3 +14,7 @@ jwt:
   signing-key: 6ae776bc-2fa2-4fb2-85f3-ba1594a10d02
   expires-time: 7d
   buffer-time: 1d
+captcha:
+  key-long: 6
+  img-width: 240
+  img-height: 80
