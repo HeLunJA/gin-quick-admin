@@ -2,7 +2,6 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"gvaTemplate/global"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
 	"gvaTemplate/model/system/response"
@@ -38,7 +37,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 		return
 	}
 	changePasswordModel.UserId = exClaims.UserId
-	err := userService.ChangePassword(&changePasswordModel)
+	err := userService.ChangePassword(changePasswordModel)
 	if err != nil {
 		response.Fail(err.Error(), c)
 		return
@@ -52,16 +51,10 @@ func (u *UserApi) GetUsers(c *gin.Context) {
 		response.Fail(err.Error(), c)
 		return
 	}
-	var users []system.SysUser
-	offset := (pageInfo.Page - 1) * pageInfo.PageSize
-	global.GT_DB.Offset(offset).Limit(pageInfo.PageSize).Find(&users)
-	var userRes []response.UserResponse
-	for _, user := range users {
-		userRes = append(userRes, response.UserResponse{
-			UserId:   user.UserId,
-			Username: user.Username,
-			NickName: user.NickName,
-		})
+	res, err := userService.GetUsers(pageInfo)
+	if err != nil {
+		response.Fail(err.Error(), c)
+		return
 	}
-	response.Ok(userRes, "查询成功", c)
+	response.Ok(res, "查询成功", c)
 }
