@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
-	"net/http"
+	"gvaTemplate/utils"
 )
 
 type UserApi struct{}
@@ -14,33 +14,33 @@ func (u *UserApi) DeleteById(c *gin.Context) {
 	userId := c.Param("userId")
 	_, err := userService.DeleteUserById(&userModel, userId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "删除用户成功"})
+	utils.Ok(nil, "删除用户成功", c)
 }
 
 func (u *UserApi) ChangePassword(c *gin.Context) {
 	claims, flag := c.Get("claims")
 	if !flag {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Object not found"})
+		utils.NoAuth("Object not found", c)
 		return
 	}
 	exClaims, ok := claims.(request.BaseClaims)
 	if !ok {
-		c.JSON(500, gin.H{"error": "Invalid object type"})
+		utils.Fail("Invalid object type", c)
 		return
 	}
 	var changePasswordModel request.ChangePassword
 	if err := c.ShouldBindJSON(&changePasswordModel); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
 	changePasswordModel.UserId = exClaims.UserId
 	err := userService.ChangePassword(&changePasswordModel)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "修改密码成功"})
+	utils.Ok(nil, "修改密码成功", c)
 }

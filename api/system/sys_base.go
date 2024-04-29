@@ -6,7 +6,6 @@ import (
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
 	"gvaTemplate/utils"
-	"net/http"
 )
 
 type BaseApi struct{}
@@ -14,26 +13,26 @@ type BaseApi struct{}
 func (u *BaseApi) Register(c *gin.Context) {
 	var userModel system.SysUser
 	if err := c.ShouldBind(&userModel); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
 	res, err := userService.Register(&userModel)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "注册成功", "data": gin.H{"userId": res.UserId, "userName": res.Username}})
+	utils.Ok(gin.H{"userId": res.UserId, "userName": res.Username}, "注册成功", c)
 }
 
 func (u *BaseApi) Login(c *gin.Context) {
 	var user system.SysUser
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
 	res, err := baseService.Login(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.Fail(err.Error(), c)
 		return
 	}
 	j := &utils.JWT{SigningKey: []byte(global.GT_CONFIG.JWT.SigningKey)}
@@ -45,10 +44,10 @@ func (u *BaseApi) Login(c *gin.Context) {
 	newClaims := j.CreateClaims(claims)
 	token, err := j.CreateToken(newClaims)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "获取token失败"})
+		utils.Fail("获取token失败", c)
 		return
 	}
 	c.Request.Header.Set("Authorization", "Bearer "+token)
 	c.Header("Authorization", "Bearer "+token)
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "登录成功", "userId": res.UserId})
+	utils.Ok(gin.H{"userId": res.UserId, "userName": res.Username}, "登录成功", c)
 }
