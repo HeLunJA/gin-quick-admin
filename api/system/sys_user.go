@@ -9,6 +9,15 @@ import (
 
 type UserApi struct{}
 
+// DeleteById
+// @Summary 根据ID删除用户
+// @Description 用户删除
+// @Tags Users
+// @Produce   application/json
+// @Param userId path string true "用户ID"
+// @Success 200 {object} response.Response{data=nil,msg=string}
+// @Failure 500 {object} response.Response{data=nil,msg=string}
+// @Router /deleteUserById/{userId} [delete]
 func (u *UserApi) DeleteById(c *gin.Context) {
 	var userModel system.SysUser
 	userId := c.Param("userId")
@@ -20,6 +29,16 @@ func (u *UserApi) DeleteById(c *gin.Context) {
 	response.Ok(nil, "删除用户成功", c)
 }
 
+// ChangePassword
+// @Summary 修改密码
+// @Description 修改密码
+// @Tags Users
+// @Produce   application/json
+// @Param password body string true "原密码"
+// @Param newPassword body string true "新密码"
+// @Success 200 {object} response.Response{data=nil,msg=string}
+// @Failure 500 {object} response.Response{data=nil,msg=string}
+// @Router /user/changePassword [post]
 func (u *UserApi) ChangePassword(c *gin.Context) {
 	claims, flag := c.Get("claims")
 	if !flag {
@@ -45,6 +64,16 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 	response.Ok(nil, "修改密码成功", c)
 }
 
+// GetUsers
+// @Summary 获取用户列表
+// @Description 获取用户列表
+// @Tags Users
+// @Produce   application/json
+// @Param page body int true "页码"
+// @Param pageSize body int true "条数"
+// @Success 200 {object} response.Response{data=response.PageInfoResponse,msg=string}
+// @Failure 500 {object} response.Response{data=nil,msg=string}
+// @Router /user/getUsers [post]
 func (u *UserApi) GetUsers(c *gin.Context) {
 	var pageInfo request.PageInfo
 	if err := c.ShouldBindJSON(&pageInfo); err != nil {

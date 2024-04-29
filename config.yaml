@@ -1,6 +1,8 @@
 server:
   host: localhost
   port: 8080
+system:
+  router-prefix: ""
 mysql:
   port: 3306
   config: charset=utf8mb4&parseTime=True&loc=Local

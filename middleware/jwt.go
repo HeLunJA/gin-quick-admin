@@ -28,7 +28,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := j.ParseToken(tokenString)
 		newClaims := request.BaseClaims{
 			UserId:   claims.UserId,
-			UserName: claims.UserName,
+			Username: claims.Username,
 			NickName: claims.NickName,
 		}
 		if err != nil {

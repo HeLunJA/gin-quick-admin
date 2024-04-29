@@ -6,7 +6,7 @@ import (
 
 type BaseClaims struct {
 	UserId   uint
-	UserName string
+	Username string
 	NickName string
 }
 
