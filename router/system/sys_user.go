@@ -13,6 +13,7 @@ func (s *userRouter) InitUserRouter(Router *gin.RouterGroup) (R gin.IRouter) {
 	{
 		userRouter.DELETE("/deleteUserById/:userId", userApi.DeleteById)
 		userRouter.POST("/changePassword", userApi.ChangePassword)
+		userRouter.POST("/getUsers", userApi.GetUsers)
 	}
 	return userRouter
 }

@@ -2,10 +2,10 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"gvaTemplate/api/response"
 	"gvaTemplate/global"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
+	"gvaTemplate/model/system/response"
 	"gvaTemplate/utils"
 )
 

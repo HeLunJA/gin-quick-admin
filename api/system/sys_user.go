@@ -2,9 +2,10 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"gvaTemplate/api/response"
+	"gvaTemplate/global"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
+	"gvaTemplate/model/system/response"
 )
 
 type UserApi struct{}
@@ -43,4 +44,24 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 		return
 	}
 	response.Ok(nil, "修改密码成功", c)
+}
+
+func (u *UserApi) GetUsers(c *gin.Context) {
+	var pageInfo request.PageInfo
+	if err := c.ShouldBindJSON(&pageInfo); err != nil {
+		response.Fail(err.Error(), c)
+		return
+	}
+	var users []system.SysUser
+	offset := (pageInfo.Page - 1) * pageInfo.PageSize
+	global.GT_DB.Offset(offset).Limit(pageInfo.PageSize).Find(&users)
+	var userRes []response.UserResponse
+	for _, user := range users {
+		userRes = append(userRes, response.UserResponse{
+			UserId:   user.UserId,
+			Username: user.Username,
+			NickName: user.NickName,
+		})
+	}
+	response.Ok(userRes, "查询成功", c)
 }
