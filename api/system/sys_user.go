@@ -2,9 +2,9 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"gvaTemplate/api/response"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
-	"gvaTemplate/utils"
 )
 
 type UserApi struct{}
@@ -14,33 +14,33 @@ func (u *UserApi) DeleteById(c *gin.Context) {
 	userId := c.Param("userId")
 	_, err := userService.DeleteUserById(&userModel, userId)
 	if err != nil {
-		utils.Fail(err.Error(), c)
+		response.Fail(err.Error(), c)
 		return
 	}
-	utils.Ok(nil, "删除用户成功", c)
+	response.Ok(nil, "删除用户成功", c)
 }
 
 func (u *UserApi) ChangePassword(c *gin.Context) {
 	claims, flag := c.Get("claims")
 	if !flag {
-		utils.NoAuth("Object not found", c)
+		response.NoAuth("Object not found", c)
 		return
 	}
 	exClaims, ok := claims.(request.BaseClaims)
 	if !ok {
-		utils.Fail("Invalid object type", c)
+		response.Fail("Invalid object type", c)
 		return
 	}
 	var changePasswordModel request.ChangePassword
 	if err := c.ShouldBindJSON(&changePasswordModel); err != nil {
-		utils.Fail(err.Error(), c)
+		response.Fail(err.Error(), c)
 		return
 	}
 	changePasswordModel.UserId = exClaims.UserId
 	err := userService.ChangePassword(&changePasswordModel)
 	if err != nil {
-		utils.Fail(err.Error(), c)
+		response.Fail(err.Error(), c)
 		return
 	}
-	utils.Ok(nil, "修改密码成功", c)
+	response.Ok(nil, "修改密码成功", c)
 }
