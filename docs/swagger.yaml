@@ -1,4 +1,11 @@
 definitions:
+  response.CaptchaResponse:
+    properties:
+      captchaId:
+        type: string
+      captchaImg:
+        type: string
+    type: object
   response.LoginResponse:
     properties:
       token:
@@ -32,6 +39,37 @@ definitions:
 info:
   contact: {}
 paths:
+  /base/captcha:
+    get:
+      description: 获取验证码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.CaptchaResponse'
+                msg:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+                msg:
+                  type: string
+              type: object
+      summary: 获取验证码
+      tags:
+      - Bases
   /base/login:
     post:
       description: 用户登录
@@ -46,6 +84,16 @@ paths:
         in: body
         name: password
         required: true
+        schema:
+          type: string
+      - description: 验证码
+        in: body
+        name: captcha
+        schema:
+          type: string
+      - description: 验证码ID
+        in: body
+        name: captchaId
         schema:
           type: string
       produces:
@@ -95,6 +143,16 @@ paths:
       - description: 昵称
         in: body
         name: nickName
+        schema:
+          type: string
+      - description: 验证码
+        in: body
+        name: captcha
+        schema:
+          type: string
+      - description: 验证码ID
+        in: body
+        name: captchaId
         schema:
           type: string
       produces:
@@ -162,6 +220,35 @@ paths:
       summary: 根据ID删除用户
       tags:
       - Users
+  /fileUploadAndDownload/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 上传文件示例
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传文件示例,返回包括文件详情
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 上传文件示例
+      tags:
+      - ExaFileUploadAndDownload
   /user/changePassword:
     post:
       description: 修改密码

@@ -15,6 +15,62 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/base/captcha": {
+            "get": {
+                "description": "获取验证码",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bases"
+                ],
+                "summary": "获取验证码",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.CaptchaResponse"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/base/login": {
             "post": {
                 "description": "用户登录",
@@ -40,6 +96,22 @@ const docTemplate = `{
                         "name": "password",
                         "in": "body",
                         "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "验证码",
+                        "name": "captcha",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "验证码ID",
+                        "name": "captchaId",
+                        "in": "body",
                         "schema": {
                             "type": "string"
                         }
@@ -123,6 +195,22 @@ const docTemplate = `{
                     {
                         "description": "昵称",
                         "name": "nickName",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "验证码",
+                        "name": "captcha",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "验证码ID",
+                        "name": "captchaId",
                         "in": "body",
                         "schema": {
                             "type": "string"
@@ -218,6 +306,57 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/fileUploadAndDownload/upload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExaFileUploadAndDownload"
+                ],
+                "summary": "上传文件示例",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传文件示例",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传文件示例,返回包括文件详情",
                         "schema": {
                             "allOf": [
                                 {
@@ -394,6 +533,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "response.CaptchaResponse": {
+            "type": "object",
+            "properties": {
+                "captchaId": {
+                    "type": "string"
+                },
+                "captchaImg": {
+                    "type": "string"
+                }
+            }
+        },
         "response.LoginResponse": {
             "type": "object",
             "properties": {
