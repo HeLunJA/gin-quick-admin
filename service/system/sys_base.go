@@ -9,7 +9,7 @@ import (
 
 type SystemBaseService struct{}
 
-func (s *SystemUserService) Register(userModel *system.SysUser) (userInter *system.SysUser, err error) {
+func (s *SystemUserService) Register(userModel *system.User) (userInter *system.User, err error) {
 	res := global.GT_DB.Where("username = ?", userModel.Username).First(&userInter)
 	if res.Error == nil {
 		return userModel, errors.New("账号已存在")
@@ -23,7 +23,7 @@ func (s *SystemUserService) Register(userModel *system.SysUser) (userInter *syst
 	return userModel, err
 }
 
-func (s *SystemBaseService) Login(userModel *system.SysUser) (userInter *system.SysUser, err error) {
+func (s *SystemBaseService) Login(userModel *system.User) (userInter *system.User, err error) {
 	result := global.GT_DB.Where("username = ?", userModel.Username).First(&userInter)
 	err = bcrypt.CompareHashAndPassword([]byte(userInter.Password), []byte(userModel.Password))
 	if result.Error != nil || err != nil {

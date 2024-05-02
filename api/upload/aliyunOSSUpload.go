@@ -12,7 +12,7 @@ import (
 type FileUploadAndDownloadApi struct{}
 
 // UploadFile
-// @Tags      ExaFileUploadAndDownload
+// @Tags      uploads
 // @Summary   上传文件示例
 // @Security  ApiKeyAuth
 // @accept    multipart/form-data

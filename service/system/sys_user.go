@@ -4,6 +4,7 @@ import (
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"gvaTemplate/global"
+	"gvaTemplate/model"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
 	"gvaTemplate/model/system/response"
@@ -11,7 +12,7 @@ import (
 
 type SystemUserService struct{}
 
-func (s *SystemUserService) DeleteUserById(userModel *system.SysUser, userId string) (userInter *system.SysUser, err error) {
+func (s *SystemUserService) DeleteUserById(userModel *system.User, userId string) (userInter *system.User, err error) {
 	res := global.GT_DB.Where("user_id = ?", userId).First(userModel)
 	if res.Error != nil {
 		err = res.Error
@@ -22,7 +23,7 @@ func (s *SystemUserService) DeleteUserById(userModel *system.SysUser, userId str
 }
 
 func (s *SystemUserService) ChangePassword(changePasswordModel request.ChangePassword) (err error) {
-	var user system.SysUser
+	var user system.User
 	res := global.GT_DB.Where("user_id = ?", changePasswordModel.UserId).First(&user)
 	if res.Error != nil {
 		return errors.New("账号不存在")
@@ -40,8 +41,8 @@ func (s *SystemUserService) ChangePassword(changePasswordModel request.ChangePas
 	return err
 }
 
-func (s *SystemUserService) GetUsers(pageInfo request.PageInfo) (data response.PageInfoResponse, err error) {
-	var users []system.SysUser
+func (s *SystemUserService) GetUsers(pageInfo model.PageInfo) (data model.PageInfoResponse, err error) {
+	var users []system.User
 	var total int64
 	searchRes := global.GT_DB.Model(&users).Count(&total)
 	if searchRes.Error != nil {
@@ -55,12 +56,12 @@ func (s *SystemUserService) GetUsers(pageInfo request.PageInfo) (data response.P
 	var userRes []response.UserResponse
 	for _, user := range users {
 		userRes = append(userRes, response.UserResponse{
-			UserId:   user.UserId,
+			UserId:   user.ID,
 			Username: user.Username,
 			NickName: user.NickName,
 		})
 	}
-	data = response.PageInfoResponse{
+	data = model.PageInfoResponse{
 		Data:  userRes,
 		Total: total,
 	}

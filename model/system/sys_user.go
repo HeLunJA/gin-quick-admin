@@ -1,12 +1,20 @@
 package system
 
-type SysUser struct {
-	UserId   uint   `json:"userId" gorm:"primarykey;comment:用户ID;not null;"`                               // 用户ID
-	Username string `json:"username" gorm:"index;comment:用户登录名;not null;" binding:"required,min=4,max=11"` // 用户登录名
-	Password string `json:"password"  gorm:"comment:用户登录密码;not null;" binding:"required"`                  // 用户登录密码
-	NickName string `json:"nickName" gorm:"default:系统用户;comment:用户昵称;not null;"`                           // 用户昵称
+import (
+	"gorm.io/gorm"
+	"gvaTemplate/model"
+)
+
+type User struct {
+	model.Model
+	Username  string         `json:"username" gorm:"index;not null;comment:用户登录名;" binding:"required,min=4,max=11"` // 用户登录名
+	Password  string         `json:"password"  gorm:"not null;comment:用户登录密码;" binding:"required"`                  // 用户登录密码
+	NickName  string         `json:"nickName" gorm:"default:匿名用户;not null;comment:用户昵称;"`
+	RoleID    uint           `json:"roleId" gorm:"index;comment:用户角色ID"`
+	Role      Role           `json:"Role" gorm:"foreignKey:RoleID;references:RoleID;comment:用户角色;"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func (SysUser) TableName() string {
+func (User) TableName() string {
 	return "sys_users"
 }

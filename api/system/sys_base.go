@@ -38,7 +38,7 @@ func (u *BaseApi) Register(c *gin.Context) {
 	captchaId := RegisterModel.CaptchaId
 
 	if captchaId != "" && captcha != "" && store.Verify(captchaId, captcha, true) {
-		userModel := system.SysUser{
+		userModel := system.User{
 			Username: RegisterModel.Username,
 			Password: RegisterModel.Password,
 			NickName: RegisterModel.NickName,
@@ -49,7 +49,7 @@ func (u *BaseApi) Register(c *gin.Context) {
 			return
 		}
 		regRes := response.UserResponse{
-			UserId:   res.UserId,
+			UserId:   res.ID,
 			Username: res.Username,
 			NickName: res.NickName,
 		}
@@ -82,7 +82,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 	captchaId := RegisterModel.CaptchaId
 
 	if captchaId != "" && captcha != "" && store.Verify(captchaId, captcha, true) {
-		user := system.SysUser{
+		user := system.User{
 			Username: RegisterModel.Username,
 			Password: RegisterModel.Password,
 		}
@@ -93,7 +93,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 		}
 		j := &utils.JWT{SigningKey: []byte(global.GT_CONFIG.JWT.SigningKey)}
 		claims := request.BaseClaims{
-			UserId:   res.UserId,
+			UserId:   res.ID,
 			Username: res.Password,
 			NickName: res.NickName,
 		}
@@ -107,7 +107,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 		c.Header("Authorization", "Bearer "+token)
 		loginRes := response.LoginResponse{
 			User: response.UserResponse{
-				UserId:   res.UserId,
+				UserId:   res.ID,
 				Username: res.Username,
 				NickName: res.NickName,
 			},

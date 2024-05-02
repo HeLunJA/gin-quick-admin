@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"gvaTemplate/model"
 	"gvaTemplate/model/system"
 	"gvaTemplate/model/system/request"
 	"gvaTemplate/model/system/response"
@@ -19,7 +20,7 @@ type UserApi struct{}
 // @Failure 500 {object} response.Response{data=nil,msg=string}
 // @Router /deleteUserById/{userId} [delete]
 func (u *UserApi) DeleteById(c *gin.Context) {
-	var userModel system.SysUser
+	var userModel system.User
 	userId := c.Param("userId")
 	_, err := userService.DeleteUserById(&userModel, userId)
 	if err != nil {
@@ -75,7 +76,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 // @Failure 500 {object} response.Response{data=nil,msg=string}
 // @Router /user/getUsers [post]
 func (u *UserApi) GetUsers(c *gin.Context) {
-	var pageInfo request.PageInfo
+	var pageInfo model.PageInfo
 	if err := c.ShouldBindJSON(&pageInfo); err != nil {
 		response.Fail(err.Error(), c)
 		return
