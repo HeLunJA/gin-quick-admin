@@ -24,7 +24,7 @@ func (s *SystemUserService) Register(userModel *system.User) (userInter *system.
 }
 
 func (s *SystemBaseService) Login(userModel *system.User) (userInter *system.User, err error) {
-	result := global.GT_DB.Where("username = ?", userModel.Username).First(&userInter)
+	result := global.GT_DB.Where("username = ?", userModel.Username).Preload("Role").First(&userInter)
 	err = bcrypt.CompareHashAndPassword([]byte(userInter.Password), []byte(userModel.Password))
 	if result.Error != nil || err != nil {
 		err = errors.New("用户名或密码错误")

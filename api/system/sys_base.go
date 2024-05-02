@@ -110,6 +110,8 @@ func (u *BaseApi) Login(c *gin.Context) {
 				UserId:   res.ID,
 				Username: res.Username,
 				NickName: res.NickName,
+				Role:     res.Role,
+				RoleID:   res.RoleID,
 			},
 			Token: token,
 		}
