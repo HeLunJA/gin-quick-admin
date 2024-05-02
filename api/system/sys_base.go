@@ -42,6 +42,7 @@ func (u *BaseApi) Register(c *gin.Context) {
 			Username: RegisterModel.Username,
 			Password: RegisterModel.Password,
 			NickName: RegisterModel.NickName,
+			RoleID:   RegisterModel.RoleID,
 		}
 		res, err := userService.Register(&userModel)
 		if err != nil {
@@ -112,6 +113,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 				NickName: res.NickName,
 				Role:     res.Role,
 				RoleID:   res.RoleID,
+				Roles:    res.Roles,
 			},
 			Token: token,
 		}

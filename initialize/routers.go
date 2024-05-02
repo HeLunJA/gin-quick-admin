@@ -24,6 +24,7 @@ func Routers() *gin.Engine {
 	AuthRouterGroup.Use(middleware.JWTAuth())
 	{
 		systemRouter.InitUserRouter(AuthRouterGroup)
+		systemRouter.InitRoleRouter(AuthRouterGroup)
 		systemRouter.InitUploadRouter(AuthRouterGroup)
 	}
 	// 捕获未匹配的路由

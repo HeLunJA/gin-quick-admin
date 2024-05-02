@@ -11,7 +11,6 @@ func RegisterTables() {
 	err := db.AutoMigrate(
 		system.User{},
 		system.Role{},
-		system.RoleRelation{},
 	)
 	if err != nil {
 		os.Exit(0)

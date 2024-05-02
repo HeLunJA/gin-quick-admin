@@ -4,4 +4,5 @@ type SystemRouterGroup struct {
 	userRouter
 	baseRouter
 	uploadRouter
+	roleRouter
 }

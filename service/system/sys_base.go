@@ -16,6 +16,14 @@ func (s *SystemUserService) Register(userModel *system.User) (userInter *system.
 	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userModel.Password), bcrypt.DefaultCost)
 	userModel.Password = string(hashedPassword)
+	if userModel.RoleID != nil {
+		var role system.Role
+		roleRes := global.GT_DB.Where("id = ?", userModel.RoleID).First(&system.Role{})
+		if roleRes.Error != nil {
+			return nil, roleRes.Error
+		}
+		userModel.Roles = append(userModel.Roles, role)
+	}
 	result := global.GT_DB.Create(userModel)
 	if result.Error != nil {
 		err = result.Error
@@ -24,10 +32,10 @@ func (s *SystemUserService) Register(userModel *system.User) (userInter *system.
 }
 
 func (s *SystemBaseService) Login(userModel *system.User) (userInter *system.User, err error) {
-	result := global.GT_DB.Where("username = ?", userModel.Username).Preload("Role").First(&userInter)
+	result := global.GT_DB.Where("username = ?", userModel.Username).Preload("Roles").Preload("Role").First(&userInter)
 	err = bcrypt.CompareHashAndPassword([]byte(userInter.Password), []byte(userModel.Password))
 	if result.Error != nil || err != nil {
-		err = errors.New("用户名或密码错误")
+		return nil, err
 	}
 	return userInter, err
 }
