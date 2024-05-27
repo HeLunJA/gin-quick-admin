@@ -9,7 +9,7 @@ import (
 
 type SystemBaseService struct{}
 
-func (s *SystemUserService) Register(userModel *system.User) (userInter *system.User, err error) {
+func (s *SystemUserService) Register(userModel *system.UserModel) (userInter *system.UserModel, err error) {
 	res := global.GT_DB.Where("username = ?", userModel.Username).First(&userInter)
 	if res.Error == nil {
 		return userModel, errors.New("账号已存在")
@@ -17,8 +17,8 @@ func (s *SystemUserService) Register(userModel *system.User) (userInter *system.
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userModel.Password), bcrypt.DefaultCost)
 	userModel.Password = string(hashedPassword)
 	if userModel.RoleID != nil {
-		var role system.Role
-		roleRes := global.GT_DB.Where("id = ?", userModel.RoleID).First(&system.Role{})
+		var role system.RoleModel
+		roleRes := global.GT_DB.Where("id = ?", userModel.RoleID).First(&role)
 		if roleRes.Error != nil {
 			return nil, roleRes.Error
 		}
@@ -31,7 +31,7 @@ func (s *SystemUserService) Register(userModel *system.User) (userInter *system.
 	return userModel, err
 }
 
-func (s *SystemBaseService) Login(userModel *system.User) (userInter *system.User, err error) {
+func (s *SystemBaseService) Login(userModel *system.UserModel) (userInter *system.UserModel, err error) {
 	result := global.GT_DB.Where("username = ?", userModel.Username).Preload("Roles").Preload("Role").First(&userInter)
 	err = bcrypt.CompareHashAndPassword([]byte(userInter.Password), []byte(userModel.Password))
 	if result.Error != nil || err != nil {

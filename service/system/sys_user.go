@@ -12,8 +12,8 @@ import (
 
 type SystemUserService struct{}
 
-func (s *SystemUserService) DeleteUserById(userModel *system.User, userId string) (userInter *system.User, err error) {
-	res := global.GT_DB.Where("user_id = ?", userId).First(userModel)
+func (s *SystemUserService) DeleteUserById(userModel *system.UserModel, userId string) (userInter *system.UserModel, err error) {
+	res := global.GT_DB.Where("id = ?", userId).First(userModel)
 	if res.Error != nil {
 		err = res.Error
 	} else {
@@ -23,8 +23,8 @@ func (s *SystemUserService) DeleteUserById(userModel *system.User, userId string
 }
 
 func (s *SystemUserService) ChangePassword(changePasswordModel request.ChangePassword) (err error) {
-	var user system.User
-	res := global.GT_DB.Where("user_id = ?", changePasswordModel.UserId).First(&user)
+	var user system.UserModel
+	res := global.GT_DB.Where("id = ?", changePasswordModel.UserId).First(&user)
 	if res.Error != nil {
 		return errors.New("账号不存在")
 	}
@@ -42,7 +42,7 @@ func (s *SystemUserService) ChangePassword(changePasswordModel request.ChangePas
 }
 
 func (s *SystemUserService) GetUsers(pageInfo model.PageInfo) (data model.PageInfoResponse, err error) {
-	var users []system.User
+	var users []system.UserModel
 	var total int64
 	searchRes := global.GT_DB.Model(&users).Count(&total)
 	if searchRes.Error != nil {

@@ -20,7 +20,7 @@ type UserApi struct{}
 // @Failure 500 {object} response.Response{data=nil,msg=string}
 // @Router /deleteUserById/{userId} [delete]
 func (u *UserApi) DeleteById(c *gin.Context) {
-	var userModel system.User
+	var userModel system.UserModel
 	userId := c.Param("userId")
 	_, err := userService.DeleteUserById(&userModel, userId)
 	if err != nil {
@@ -77,8 +77,8 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 // @Router /user/getUsers [post]
 func (u *UserApi) GetUsers(c *gin.Context) {
 	var pageInfo model.PageInfo
-	if err := c.ShouldBindJSON(&pageInfo); err != nil {
-		response.Fail(err.Error(), c)
+	if err := c.ShouldBindJSON(&pageInfo); err != nil || pageInfo.Page == 0 || pageInfo.PageSize == 0 {
+		response.Fail("page和pageSize参数不能为空", c)
 		return
 	}
 	res, err := userService.GetUsers(pageInfo)

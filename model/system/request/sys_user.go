@@ -9,7 +9,7 @@ type ChangePassword struct {
 }
 
 type CaptchaRegister struct {
-	system.User
+	system.UserModel
 	Captcha   string `json:"captcha"`
 	CaptchaId string `json:"captchaId"`
 }

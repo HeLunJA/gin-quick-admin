@@ -38,13 +38,13 @@ func (u *BaseApi) Register(c *gin.Context) {
 	captchaId := RegisterModel.CaptchaId
 
 	if captchaId != "" && captcha != "" && store.Verify(captchaId, captcha, true) {
-		userModel := system.User{
+		user := system.UserModel{
 			Username: RegisterModel.Username,
 			Password: RegisterModel.Password,
 			NickName: RegisterModel.NickName,
 			RoleID:   RegisterModel.RoleID,
 		}
-		res, err := userService.Register(&userModel)
+		res, err := userService.Register(&user)
 		if err != nil {
 			response.Fail(err.Error(), c)
 			return
@@ -83,7 +83,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 	captchaId := RegisterModel.CaptchaId
 
 	if captchaId != "" && captcha != "" && store.Verify(captchaId, captcha, true) {
-		user := system.User{
+		user := system.UserModel{
 			Username: RegisterModel.Username,
 			Password: RegisterModel.Password,
 		}
@@ -95,7 +95,7 @@ func (u *BaseApi) Login(c *gin.Context) {
 		j := &utils.JWT{SigningKey: []byte(global.GT_CONFIG.JWT.SigningKey)}
 		claims := request.BaseClaims{
 			UserId:   res.ID,
-			Username: res.Password,
+			Username: res.Username,
 			NickName: res.NickName,
 		}
 		newClaims := j.CreateClaims(claims)

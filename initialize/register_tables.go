@@ -9,8 +9,8 @@ import (
 func RegisterTables() {
 	db := global.GT_DB
 	err := db.AutoMigrate(
-		system.User{},
-		system.Role{},
+		system.UserModel{},
+		system.RoleModel{},
 	)
 	if err != nil {
 		os.Exit(0)

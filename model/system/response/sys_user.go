@@ -3,12 +3,12 @@ package response
 import "gvaTemplate/model/system"
 
 type UserResponse struct {
-	UserId   uint          `json:"userId"`
-	Username string        `json:"username"`
-	NickName string        `json:"nickName"`
-	RoleID   *uint         `json:"roleId"`
-	Role     system.Role   `json:"roleInfo"`
-	Roles    []system.Role `json:"roles"`
+	UserId   uint               `json:"userId"`
+	Username string             `json:"username"`
+	NickName string             `json:"nickName"`
+	RoleID   *uint              `json:"roleId"`
+	Role     system.RoleModel   `json:"roleInfo"`
+	Roles    []system.RoleModel `json:"roles"`
 }
 
 type LoginResponse struct {

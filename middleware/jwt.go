@@ -26,15 +26,15 @@ func JWTAuth() gin.HandlerFunc {
 		tokenString := authHeader[7:]
 		j := utils.NewJWT()
 		claims, err := j.ParseToken(tokenString)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+			return
+		}
 		newClaims := request.BaseClaims{
 			UserId:   claims.UserId,
 			Username: claims.Username,
 			NickName: claims.NickName,
-		}
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to get claims"})
-			c.Abort()
-			return
 		}
 		c.Set("claims", newClaims)
 		c.Next()
