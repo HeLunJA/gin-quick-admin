@@ -56,31 +56,52 @@ func (s *SystemRoleService) AddRole(role *system.RoleModel) (roleInter *system.R
 }
 
 func (s *SystemRoleService) SetRole(role *system.RoleModel) (roleInter *system.RoleModel, err error) {
+	tx := global.GT_DB.Begin()
 	var searchRole system.RoleModel
-	global.GT_DB.Take(&searchRole, role.ID)
+	if err := tx.Take(&searchRole, role.ID).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	var parentModel system.RoleModel
-	global.GT_DB.Preload("ChildrenRoles").Take(&parentModel, searchRole.ParentId)
-	result := global.GT_DB.Updates(&role)
+	if err := tx.Preload("ChildrenRoles").Take(&parentModel, searchRole.ParentId).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	result := tx.Updates(&role)
 	if result.Error != nil {
+		tx.Rollback()
 		return nil, result.Error
 	}
-	err = global.GT_DB.Model(&parentModel).Association("ChildrenRoles").Delete(&parentModel.ChildrenRoles)
-	if err != nil {
+	if err := tx.Model(&parentModel).Association("ChildrenRoles").Delete(&parentModel.ChildrenRoles); err != nil {
+		tx.Rollback()
 		return nil, err
 	}
 	parentModel.ChildrenRoles = append(parentModel.ChildrenRoles, role)
-	global.GT_DB.Save(&parentModel)
-	return role, result.Error
+	if err := tx.Save(&parentModel).Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	if err := tx.Commit().Error; err != nil {
+		return nil, err
+	}
+	return role, nil
 }
 
-func (s *SystemRoleService) GetRoleList() (roles *system.RoleModel, err error) {
+func (s *SystemRoleService) GetRoleList() (roles []system.RoleModel, err error) {
 	var roleList []system.RoleModel
-	global.GT_DB.Find(&roleList, &system.RoleModel{DeletedAt: gorm.DeletedAt{}})
+	// 查询时排除已删除的记录
+	if err := global.GT_DB.Find(&roleList, &system.RoleModel{DeletedAt: gorm.DeletedAt{}}).Error; err != nil {
+		return nil, err
+	}
+
 	tree, err := buildTree(roleList)
 	if err != nil {
 		return nil, err
 	}
-	return tree, err
+
+	var roleData []system.RoleModel
+	roleData = append(roleData, *tree)
+	return roleData, nil
 }
 
 func buildTree(roles []system.RoleModel) (*system.RoleModel, error) {
