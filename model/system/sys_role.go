@@ -10,7 +10,7 @@ type RoleModel struct {
 	RoleName      string       `json:"roleName" gorm:"not null;comment:角色名称;"`
 	Description   *string      `json:"description" gorm:"comment:角色描述;"`
 	ParentId      *uint        `json:"parentId" gorm:"comment:父级ID;"`
-	ChildrenRoles []*RoleModel `json:"childrenRoles" gorm:"many2many:role_relations;"`
+	ChildrenRoles []*RoleModel `json:"childrenRoles" gorm:"-"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`

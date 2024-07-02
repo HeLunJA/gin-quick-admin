@@ -45,6 +45,7 @@ func (u *RoleApi) SetRole(c *gin.Context) {
 	}
 	setRole, err := roleService.SetRole(&role)
 	if err != nil {
+		response.Fail(err.Error(), c)
 		return
 	}
 	response.Ok(setRole, "修改成功", c)
